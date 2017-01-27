@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha test"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Po-Ying Chen <poying.me@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "moment": "^2.17.1"
   },
