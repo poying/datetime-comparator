@@ -1,17 +1,18 @@
 const tk = require('timekeeper');
 const { expect } = require('chai');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const select = require('../lib/select');
 
 describe('select', () => {
+  afterEach(() => tk.reset());
+
   it('day', () => {
     const end = moment();
     const start = end.clone().add(-1, 'days');
     tk.freeze(end.toDate());
     expect(select('day')).to.deep.equal({
-      start: start.format('YYYY/MM/DD'),
-      end: end.format('YYYY/MM/DD'),
-      format: 'YYYY/MM/DD'
+      start: start.toDate(),
+      end: end.toDate()
     });
   });
 
@@ -20,9 +21,8 @@ describe('select', () => {
     const start = end.clone().add(-3, 'days');
     tk.freeze(end.toDate());
     expect(select('3 days')).to.deep.equal({
-      start: start.format('YYYY/MM/DD'),
-      end: end.format('YYYY/MM/DD'),
-      format: 'YYYY/MM/DD'
+      start: start.toDate(),
+      end: end.toDate()
     });
   });
 
@@ -31,9 +31,8 @@ describe('select', () => {
     const start = end.clone().add(-30, 'days');
     tk.freeze(end.toDate());
     expect(select('30 days', end.toDate())).to.deep.equal({
-      start: start.format('YYYY/MM/DD'),
-      end: end.format('YYYY/MM/DD'),
-      format: 'YYYY/MM/DD'
+      start: start.toDate(),
+      end: end.toDate()
     });
   });
 
@@ -42,9 +41,8 @@ describe('select', () => {
     const start = end.clone().add(-1, 'months');
     tk.freeze(end.toDate());
     expect(select('month')).to.deep.equal({
-      start: start.format('YYYY/MM'),
-      end: end.format('YYYY/MM'),
-      format: 'YYYY/MM'
+      start: start.toDate(),
+      end: end.toDate()
     });
   });
 
@@ -53,21 +51,22 @@ describe('select', () => {
     const start = end.clone().add(-1, 'years');
     tk.freeze(end.toDate());
     expect(select('year')).to.deep.equal({
-      start: start.format('YYYY'),
-      end: end.format('YYYY'),
-      format: 'YYYY'
+      start: start.toDate(),
+      end: end.toDate()
     });
   });
 
   it('custom format', () => {
+    const now = moment();
+    tk.freeze(now.toDate());
     expect(select('[hh:mm] 12:00 - 20:00')).to.deep.equal({
-      start: '12:00',
-      end: '20:00',
+      start: new Date(now.format('YYYY-MM-DD') + ' 12:00'),
+      end: new Date(now.format('YYYY-MM-DD') + ' 20:00'),
       format: 'hh:mm'
     });
     expect(select('[hh:mm] 12:00 ~ 20:00')).to.deep.equal({
-      start: '12:00',
-      end: '20:00',
+      start: new Date(now.format('YYYY-MM-DD') + ' 12:00'),
+      end: new Date(now.format('YYYY-MM-DD') + ' 20:00'),
       format: 'hh:mm'
     });
   });
